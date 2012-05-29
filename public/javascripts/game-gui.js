@@ -14,12 +14,6 @@ var bindGUI = function() {
       addAnswerAttempt(data.username, data.answer, data.sId);
     } );
     socket.on('response_rejected', function() {} );
-    socket.on('game_finished', function(data) {
-      if(data.sIdDrawing==socket.socket.sessionid) {
-        isDrawing = true;
-        restartGame();
-      }
-    });
     socket.on('notify_canvas_changed', function(data) {
       setCanvasData(data.image);
     });
