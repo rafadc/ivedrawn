@@ -18,6 +18,7 @@ var bindGUI = function() {
       setCanvasData(data.image);
     });
     socket.on('game_info', function(data) {
+ 	  showNewGameModal(data.usernameDrawing, data.correctWas);
       if (data.sIdDrawing==socket.socket.sessionid) {
         isDrawing = true;
       }
@@ -36,6 +37,8 @@ var bindGUI = function() {
   $("#drawing_zone").mouseup( function() {
     socket.emit('canvas_changed',{image: getCanvasData()});
   });
+
+  $("#newGameModal").modal('hide');
 };
 
 var showAskForUserDialog = function() {
@@ -44,6 +47,19 @@ var showAskForUserDialog = function() {
     backdrop: 'static',
     show: true
   });
+}
+
+var showNewGameModal = function(usernameDrawing, lastAnswer) {
+	$('#newGameDescription').empty();
+	if (lastAnswer != undefined) {
+		$('#newGameDescription').append($("<div>").html("Last game response was: "+lastAnswer+"."));
+	}
+	$('#newGameDescription').append($("<div>").html("User drawing is: "+usernameDrawing+"."));
+	$('#newGameModal').modal({
+	  keyboard: true,
+	  backdrop: true,
+      show: true
+    });
 }
 
 var addAnswerAttempt = function(username, answer, sId) {
@@ -90,8 +106,6 @@ var getCanvasData = function() {
 }
 
 var setCanvasData = function(imgData) {
-	console.log("imgData");
-	console.log(imgData);
   if (imgData != undefined) {
     var receivedImage = new Image();
     receivedImage.src = imgData;

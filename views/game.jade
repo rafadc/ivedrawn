@@ -21,13 +21,21 @@ script(src="/javascripts/game-gui.js")
       input(type='text', id="response_attempt_input")
       #send_response_attempt(class="btn") Try to answer
 
-.modal(id="usernameModal")
+.modal(id="usernameModal", class='fade')
   .modal-header
     h1 Wanna join the game?
   .modal-body
     input(type='text', id="username_input")
   .modal-footer
     #set_username(class='btn') Join
+
+.modal(id="newGameModal", class='fade')
+  .modal-header
+    h1 New game starting
+  .modal-body
+    div(id='newGameDescription')
+  .modal-footer
+    #close(class='btn') Close
 
 script
   $( function () {
