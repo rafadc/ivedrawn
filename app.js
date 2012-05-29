@@ -6,6 +6,7 @@
 var express = require('express')
   , app = express.createServer()
   , routes = require('./routes')
+  , gameLogic = require('./lib/gameLogic')
   , io = require('socket.io').listen(app);
 
 // Configuration
@@ -31,67 +32,38 @@ app.configure('production', function(){
 
 app.get('/', routes.game);
 
-var usernames = {};
-var responses = {};
-var sIdDrawing;
-var imgData;
+// Websocket
 
 io.sockets.on('connection', function (socket) {
   console.log("Socket "+socket.id+ " connected");
   socket.send(socket.id);
 
   socket.on('join', function (data) {
-    console.log("A new user: "+data.username+ " has miraculously joined");
-    usernames[socket.id] = data.username;
-    if (sIdDrawing==undefined) {
-      setUserDrawing(socket.id);
-    }
-    emitGameInfo(socket);
+    gameLogic.onJoin(socket, data);
   });
 
   socket.on('send_response', function (data) {
-    console.log("User sent response: "+data.answer);
-    socket.broadcast.emit('response_added', {
-      sId : socket.id,
-      username: usernames[socket.id],
-      answer: data.answer
-    });
+    gameLogic.onSendResponse(socket,data);
   });
 
   socket.on('accept_response', function (data) {
-    console.log("User accepted response: "+data.sId);
-    socket.broadcast.emit('game_finished', {sId: data.sId});
+    gameLogic.onAcceptResponse(socket, data);
   });
 
   socket.on('reject_response', function (data) {
-    console.log("User rejected response: "+data.sId);
-    delete responses[sId];
-    socket.broadcast.emit('response_rejected', {sId: data.sId});
+	gameLogic.onRejectResponse(socket, data);
   });
 
-  socket.on('canvas_changed', function(data) {
-	imgData = data.image;
-    socket.broadcast.emit('notify_canvas_changed', {image: data.image});
+  socket.on('canvas_changed', function (data) {
+	gameLogic.onCanvasChange(socket, data);
   });
 
   socket.on('disconnect', function () {
-    console.log("User "+usernames[socket.id]+" lost connection. Dropping.");
-    delete usernames[socket.id];
-    delete responses[socket.id];
+    gameLogic.onDisconnect(socket);
   });
 });
 
-var emitGameInfo = function(socket) {
-  socket.emit('game_info', {
-    sIdDrawing : sIdDrawing,
-    image : imgData
-  });
-};
-
-var setUserDrawing = function(sId) {
-  sIdDrawing = sId;
-  console.log("User "+usernames[sId]+" is now drawing");
-};
+// Start server
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
