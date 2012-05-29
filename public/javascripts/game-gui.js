@@ -37,8 +37,6 @@ var bindGUI = function() {
   $("#drawing_zone").mouseup( function() {
     socket.emit('canvas_changed',{image: getCanvasData()});
   });
-
-  $("#newGameModal").modal('hide');
 };
 
 var showAskForUserDialog = function() {
