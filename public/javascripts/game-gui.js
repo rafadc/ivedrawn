@@ -19,9 +19,7 @@ var bindGUI = function() {
     });
     socket.on('game_info', function(data) {
  	  showNewGameModal(data.usernameDrawing, data.correctWas);
-      if (data.sIdDrawing==socket.socket.sessionid) {
-        isDrawing = true;
-      }
+      isDrawing = data.sIdDrawing==socket.socket.sessionid;
       restartGame();
       setCanvasData(data.image);
     });
@@ -110,7 +108,15 @@ var setCanvasData = function(imgData) {
 	receivedImage.onload = function() {
       var canvas = document.getElementById('drawing_zone');
       var ctx = canvas.getContext('2d');
+      clearCanvas(ctx);
       ctx.drawImage(receivedImage, 0, 0);
 	}
   }
+}
+
+var clearCanvas = function (context) {
+  context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+  var w = context.canvas.width;
+  context.canvas.width = 1;
+  context.canvas.width = w;
 }
