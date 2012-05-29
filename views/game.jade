@@ -1,0 +1,37 @@
+script(src="/socket.io/socket.io.js")
+script(src="/lib/jquery-1.7.2.min.js")
+script(src="/lib/bootstrap/js/bootstrap.min.js")
+script(src="/lib/sketch.min.js")
+script(src="/javascripts/game-gui.js")
+
+.container
+  .row
+    h1 Guess the draw
+  .row(id="drawing_notice")
+    h2 You are drawing
+  .row
+    .span8
+      h2 Drawing zone
+      canvas(id='drawing_zone', height='350px', width='600px')
+    .span4
+      h2 Answer list
+      #answer_list
+  .row(id="attempt_response_block")
+    .form
+      input(type='text', id="response_attempt_input")
+      #send_response_attempt(class="btn") Try to answer
+
+.modal(id="usernameModal")
+  .modal-header
+    h1 Wanna join the game?
+  .modal-body
+    input(type='text', id="username_input")
+  .modal-footer
+    #set_username(class='btn') Join
+
+script
+  $( function () {
+    restartGame();
+    showAskForUserDialog();
+    bindGUI();
+  });
