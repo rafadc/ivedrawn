@@ -25,6 +25,10 @@ var bindGUI = function() {
     });
   });
 
+  $("#closeNewGameModal").click( function() {
+    $("#newGameModal").modal('hide');
+  });
+
   $("#send_response_attempt").click( function() {
     answer = $("#response_attempt_input").val();
     socket.emit('send_response',{answer: answer});
@@ -35,6 +39,7 @@ var bindGUI = function() {
   $("#drawing_zone").mouseup( function() {
     socket.emit('canvas_changed',{image: getCanvasData()});
   });
+
 };
 
 var showAskForUserDialog = function() {
