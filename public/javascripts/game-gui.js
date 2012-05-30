@@ -107,15 +107,15 @@ var getCanvasData = function() {
 }
 
 var setCanvasData = function(imgData) {
+  var canvas = document.getElementById('drawing_zone');
+  var ctx = canvas.getContext('2d');
+  clearCanvas(ctx);
   if (imgData != undefined) {
     var receivedImage = new Image();
-    receivedImage.src = imgData;
-	receivedImage.onload = function() {
-      var canvas = document.getElementById('drawing_zone');
-      var ctx = canvas.getContext('2d');
-      clearCanvas(ctx);
+	  receivedImage.onload = function() {
       ctx.drawImage(receivedImage, 0, 0);
-	}
+	  }
+    receivedImage.src = imgData;
   }
 }
 
