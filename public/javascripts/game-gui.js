@@ -66,6 +66,7 @@ var showNewGameModal = function(usernameDrawing, lastAnswer) {
 }
 
 var addAnswerAttempt = function(username, answer, sId) {
+  removeAnswerAttempt(sId);
   answerText = $("<span>").html(username+" : "+answer);
 
   itemToAdd = $("<div>").attr("id", "answer_"+sId);
@@ -85,7 +86,7 @@ var addAnswerAttempt = function(username, answer, sId) {
     itemToAdd.append(buttonReject);
   }
 
-  $("#answer_list").append(itemToAdd);
+  $("#answer_list").prepend(itemToAdd);
 };
 
 var removeAnswerAttempt = function(sId) {
