@@ -109,7 +109,7 @@ var getCanvasData = function() {
 var setCanvasData = function(imgData) {
   var canvas = document.getElementById('drawing_zone');
   var ctx = canvas.getContext('2d');
-  clearCanvas(ctx);
+  clearCanvas(canvas);
   if (imgData != undefined) {
     var receivedImage = new Image();
 	  receivedImage.onload = function() {
@@ -119,9 +119,11 @@ var setCanvasData = function(imgData) {
   }
 }
 
-var clearCanvas = function (context) {
-  context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-  var w = context.canvas.width;
-  context.canvas.width = 1;
-  context.canvas.width = w;
+var clearCanvas = function (canvas) {
+  $("#drawing_zone").sketch().actions=[]
+  var ctx = canvas.getContext('2d');
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
 }
