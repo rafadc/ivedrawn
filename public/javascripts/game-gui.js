@@ -18,7 +18,7 @@ var bindGUI = function() {
       setCanvasData(data.image);
     });
     socket.on('game_info', function(data) {
- 	  showNewGameModal(data.usernameDrawing, data.correctWas);
+ 	    showNewGameModal(data.usernameDrawing, data.correctWas);
       isDrawing = data.sIdDrawing==socket.socket.sessionid;
       restartGame();
       setCanvasData(data.image);
