@@ -13,7 +13,9 @@ var bindGUI = function() {
     socket.on('response_added', function(data) {
       addAnswerAttempt(data.username, data.answer, data.sId);
     } );
-    socket.on('response_rejected', function() {} );
+    socket.on('response_rejected', function(data) {
+      removeAnswerAttempt(data.sId);
+    } );
     socket.on('notify_canvas_changed', function(data) {
       setCanvasData(data.image);
     });
@@ -32,7 +34,7 @@ var bindGUI = function() {
   $("#send_response_attempt").click( function() {
     answer = $("#response_attempt_input").val();
     socket.emit('send_response',{answer: answer});
-    addAnswerAttempt(username, answer, null);
+    addAnswerAttempt(username, answer, socket.socket.sessionid);
     $("#response_attempt_input").val("");
   });
   
@@ -66,7 +68,7 @@ var showNewGameModal = function(usernameDrawing, lastAnswer) {
 var addAnswerAttempt = function(username, answer, sId) {
   answerText = $("<span>").html(username+" : "+answer);
 
-  itemToAdd = $("<div>");
+  itemToAdd = $("<div>").attr("id", "answer_"+sId);
   itemToAdd.append(answerText);
 
   if (isDrawing) {
@@ -86,6 +88,9 @@ var addAnswerAttempt = function(username, answer, sId) {
   $("#answer_list").append(itemToAdd);
 };
 
+var removeAnswerAttempt = function(sId) {
+  $("#answer_"+sId).remove();
+};
 
 var restartGame = function() {
   $("#answer_list").empty();
@@ -109,13 +114,14 @@ var getCanvasData = function() {
 var setCanvasData = function(imgData) {
   var canvas = document.getElementById('drawing_zone');
   var ctx = canvas.getContext('2d');
-  clearCanvas(canvas);
   if (imgData != undefined) {
     var receivedImage = new Image();
 	  receivedImage.onload = function() {
       ctx.drawImage(receivedImage, 0, 0);
 	  }
     receivedImage.src = imgData;
+  } else {
+    clearCanvas(canvas);
   }
 }
 
@@ -126,5 +132,4 @@ var clearCanvas = function (canvas) {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.restore();
-  $("#drawing_zone").sketch().draw();
 }
