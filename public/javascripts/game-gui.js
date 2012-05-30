@@ -6,7 +6,7 @@ var bindGUI = function() {
   $("#set_username").click( function () {
     $('#usernameModal').modal('hide');
     username = $("#username_input").val();
-    socket = io.connect('http://localhost');
+    socket = io.connect('/');
     socket.on('connect', function() {
       socket.emit('join', { username: $("#username_input").val() });
     });
