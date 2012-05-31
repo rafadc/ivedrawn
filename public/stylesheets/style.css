@@ -1,3 +1,66 @@
+body {
+    background: url("../images/purty_wood.png") repeat;
+}
+
+body, p {
+  font-family: 'Open Sans', sans-serif;
+}
+
+h1, h2, h3 {
+  font-family: 'Open Sans Condensed', sans-serif;
+}
+
+.navbar, navbar-inner {
+    margin-bottom: 0px;
+    text-align: center;
+}
+
+.navbar h1, #drawing_notice {
+    color: #cccccc;
+}
+
+h1 {
+    font-size: 90px;
+    line-height: 100px;
+}
+
+h2 {
+    font-size: 40px;
+    line-height: 50px;
+}
+
+#drawing_notice {
+    background: url("../images/pool_table.jpg") repeat;
+    text-align: center;
+    border: 0px 2px 2px 2px solid;
+    margin: 0px auto 10px auto;
+    padding: 10px 0px 10px 0px;
+    width: 300px;
+    border: 1px solid;
+    -moz-box-shadow: 5px 3px 3px grey;
+    -webkit-box-shadow: 5px 3px 3px grey;
+    box-shadow: 5px 3px 3px grey;
+}
+
+.drawing, .answers, #attempt_response_block {
+    background: url("../images/ricepaper2.png") repeat;
+    padding: 10px;
+    border: 1px solid gray;
+}
+
+i {
+    vertical-align:text-top;
+    float: right;
+}
+
+.answerLine {
+    width: 100%;
+}
+
 canvas {
-	border: solid 1px;
+    border: solid 1px;
+}
+
+modal-body input {
+    width: 100%;
 }

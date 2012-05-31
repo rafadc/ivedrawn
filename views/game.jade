@@ -5,19 +5,23 @@ script(src="/lib/sketch.min.js")
 script(src="/javascripts/game-gui.js")
 
 .container
-  .row
-    h1 I've drawn...
-  .row(id="drawing_notice")
+  .navbar
+    .navbar-inner
+      .container
+        h1 I've drawn...
+  div(id="drawing_notice")
     h2 You are drawing
   .row
-    .span8
+    .span8(class='drawing')
       h2 Drawing zone
-      canvas(id='drawing_zone', height='350px', width='600px')
-    .span4
+      hr
+      canvas(id='drawing_zone', height='350px', width='590px')
+    .span3(class='answers')
       h2 Answer list
+      hr
       #answer_list
-  .row(id="attempt_response_block")
-    .form
+  .row
+    span6(class='offset2', id="attempt_response_block")
       input(type='text', id="response_attempt_input")
       #send_response_attempt(class="btn") Try to answer
 
@@ -25,7 +29,7 @@ script(src="/javascripts/game-gui.js")
   .modal-header
     h1 Wanna join the game?
   .modal-body
-    input(type='text', id="username_input")
+    input(type='text', id="username_input", placeholder="Type your name here")
   .modal-footer
     #set_username(class='btn') Join
 
@@ -43,3 +47,6 @@ script
     showAskForUserDialog();
     bindGUI();
   });
+
+a(href="https://github.com/rafadc/ivedrawn")
+  img(style="position: absolute; top: 0; right: 0; border: 0;", src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png", alt="Fork me on GitHub")

@@ -67,17 +67,17 @@ var showNewGameModal = function(usernameDrawing, lastAnswer) {
 
 var addAnswerAttempt = function(username, answer, sId) {
   removeAnswerAttempt(sId);
-  answerText = $("<span>").html(username+" : "+answer);
+  answerText = $("<span>").text(username+" : "+answer);
 
-  itemToAdd = $("<div>").attr("id", "answer_"+sId);
+  itemToAdd = $("<div>").addClass("answerLine").attr("id", "answer_"+sId);
   itemToAdd.append(answerText);
 
   if (isDrawing) {
-    buttonAccept = $("<div>").addClass("btn btn-success").html("OK");
+    buttonAccept = $("<i>").addClass("icon-ok-circle");
     buttonAccept.click(function() {
       socket.emit('accept_response', {sId: sId} );
     });
-    buttonReject = $("<div>").addClass("btn btn-danger").html("NO");
+    buttonReject = $("<i>").addClass("icon-remove-circle");
     buttonReject.click(function() {
       socket.emit('reject_response', {sId: sId} );
     });
