@@ -17,7 +17,7 @@ makes a random player to draw.
 
 # Demo
 
-I've installed [a little demo](http://vks11798.ip-37-59-119.eu/) at a VPS.
+I've installed [a little demo](http://ivedrawn.jit.su/) at Nodejitsu.
 
 I cannot guarantee that is up and running ;)
 
