@@ -9,7 +9,7 @@ exports.onJoin = (socket, data) ->
   console.log("A new user: #{data.username} has miraculously joined")
   socketIds.push(socket.id)
   usernames[socket.id] = data.username
-  setUserDrawing(socket, socket.id) if (nobodyDrawing())
+  setUserDrawing(socket, socket.id) if nobodyDrawing()
   emitGameInfo(socket)
 
 exports.onDisconnect = (socket) ->
