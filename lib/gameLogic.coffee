@@ -1,112 +1,85 @@
-var socketIds = [];
-var usernames = {};
-var responses = {};
-var sIdDrawing;
-var imgData;
-var gameResignTimer;
+socketIds = []
+usernames = {}
+responses = {}
+sIdDrawing = null
+imgData = null
+gameResignTimer = null
 
-exports.onJoin = function(socket, data) {
-	console.log("A new user: "+data.username+ " has miraculously joined");
-	socketIds.push(socket.id);
-  usernames[socket.id] = data.username;
-  if (nobodyDrawing()) {
-    setUserDrawing(socket, socket.id);
-  }
-  emitGameInfo(socket);
-};
+exports.onJoin = (socket, data) ->
+  console.log("A new user: #{data.username} has miraculously joined")
+  socketIds.push(socket.id)
+  usernames[socket.id] = data.username
+  setUserDrawing(socket, socket.id) if (nobodyDrawing())
+  emitGameInfo(socket)
 
-exports.onDisconnect = function(socket) {
-	console.log("User "+usernames[socket.id]+" lost connection. Dropping.");
-	forgetSocketId(socket.id);
-  if (socket.id==sIdDrawing) {
-	  if(socketIds.length>0) {
-      chooseRandomPlayerToDraw(socket);
-	  } else {
-      clearGameData();
-	  }
-  }
-};
+exports.onDisconnect = (socket) ->
+  console.log("User #{usernames[socket.id]} lost connection. Dropping.")
+  forgetSocketId(socket.id)
+  if (socket.id==sIdDrawing)
+	  if(socketIds.length>0)
+      chooseRandomPlayerToDraw(socket)
+	  else
+      clearGameData()
 
-exports.onSendResponse = function(socket, data) {
-	console.log("User sent response: "+data.answer);
+exports.onSendResponse = (socket, data) ->
+  console.log("User sent response: #{data.answer}")
   socket.broadcast.emit('response_added', {
     sId : socket.id,
     username: usernames[socket.id],
     answer: data.answer
-  });
-};
+  })
 
-exports.onAcceptResponse = function(socket, data) {
-	console.log("User accepted response: "+data.sId);
-	socket.broadcast.emit('game_info', {
-    sIdDrawing: data.sId,
-	  usernameDrawing: usernames[data.sId],
-		correctWas: responses[data.sId]
-  });
-	socket.emit('game_info', {
+exports.onAcceptResponse = (socket, data) ->
+  console.log("User accepted response: #{data.sId}")
+  socket.broadcast.emit('game_info', {sIdDrawing: data.sId, usernameDrawing: usernames[data.sId], correctWas: responses[data.sId]})
+  socket.emit('game_info', {
     sIdDrawing: data.sId,
 		usernameDrawing: usernames[data.sId],
-		correctWas: responses[data.sId]
-  });
-  setUserDrawing(socket, data.sId);
-};
+		correctWas: responses[data.sId]})
+  setUserDrawing(socket, data.sId)
 
-exports.onRejectResponse = function(socket, data) {
-	console.log("User rejected response: "+data.sId);
-  delete responses[data.sId];
-  socket.broadcast.emit('response_rejected', {sId: data.sId});
-  socket.emit('response_rejected', {sId: data.sId});
-};
+exports.onRejectResponse = (socket, data) ->
+  console.log("User rejected response: #{data.sId}")
+  responses[data.sId] = null
+  socket.broadcast.emit('response_rejected', {sId: data.sId})
+  socket.emit('response_rejected', {sId: data.sId})
 
-exports.onCanvasChange = function(socket, data) {
-	imgData = data.image;
-  socket.broadcast.emit('notify_canvas_changed', {image: data.image});
-};
+exports.onCanvasChange = (socket, data) ->
+  imgData = data.image
+  socket.broadcast.emit('notify_canvas_changed', {image: data.image})
 
-var setUserDrawing = function(socket, sId) {
-  clearGameData();
-  sIdDrawing = sId;
-  gameResignTimer = setTimeout(function() {resignGame(socket)} ,120000);
-  console.log("User " + usernames[sId] + " is now drawing");
-};
+setUserDrawing = (socket, sId) ->
+  clearGameData()
+  sIdDrawing = sId
+  gameResignTimer = setTimeout( (-> resignGame(socket)) ,120000)
+  console.log("User " + usernames[sId] + " is now drawing")
 
-var nobodyDrawing = function() {
-  return sIdDrawing == undefined;
-}
+nobodyDrawing = ->
+  sIdDrawing == null
 
-var emitGameInfo = function(socket) {
-  socket.emit('game_info', {
-    sIdDrawing: sIdDrawing,
-		usernameDrawing: usernames[sIdDrawing],
-    image: imgData
-  });
-};
+emitGameInfo = (socket) ->
+  socket.emit('game_info', {sIdDrawing: sIdDrawing, usernameDrawing: usernames[sIdDrawing], image: imgData })
 
-var chooseRandomPlayerToDraw = function(socket) {
-	console.log("Selecting randomly next player to play");
-	setUserDrawing(socket, pickRandomSocketId());
-	emitGameInfo(socket.broadcast);
-	emitGameInfo(socket);
-};
+chooseRandomPlayerToDraw = (socket) ->
+	console.log("Selecting randomly next player to play")
+	setUserDrawing(socket, pickRandomSocketId())
+	emitGameInfo(socket.broadcast)
+	emitGameInfo(socket)
 
-var pickRandomSocketId = function() {
-  randomSId = Math.floor(Math.random()*socketIds.length);
-  return socketIds[randomSId];
-};
+pickRandomSocketId = ->
+  randomSId = Math.floor(Math.random()*socketIds.length)
+  return socketIds[randomSId]
 
-var forgetSocketId = function(sId) {
-	socketIds.splice(socketIds.indexOf(sId),1);
-	delete usernames[sId];
-  delete responses[sId];
-};
+forgetSocketId = (sId) ->
+  socketIds.splice(socketIds.indexOf(sId),1)
+  usernames[sId] = null
+  responses[sId] = null
 
-var resignGame = function(socket) {
-  console.log("Timeout. Creating a new game");
-  chooseRandomPlayerToDraw(socket);
-}
+resignGame = (socket) ->
+  console.log("Timeout. Creating a new game")
+  chooseRandomPlayerToDraw(socket)
 
-var clearGameData = function() {
-  sIdDrawing = undefined;
-  delete imgData;
-  clearTimeout(gameResignTimer);
-}
+clearGameData = ->
+  sIdDrawing = null
+  imgData = null
+  clearTimeout(gameResignTimer)
