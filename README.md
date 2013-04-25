@@ -17,7 +17,6 @@ makes a random player to draw.
 
 # Demo
 
-I've installed [a little demo](http://ivedrawn.jit.su/) at Nodejitsu.
+Demo is unfortunately down. 
 
-I cannot guarantee that is up and running ;)
-
+I'll work a bit more on this soon. ;)
