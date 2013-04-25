@@ -5,7 +5,8 @@
   "dependencies": {
     "express": "2.5.8",
     "jade": "0.26.1",
-    "socket.io": "0.9.6"
+    "socket.io": "0.9.6",
+    "cofee-script": "1.5.0"
   },
   "subdomain": "ivedrawn",
   "scripts": {
